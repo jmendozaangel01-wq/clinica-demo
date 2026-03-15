@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosotros — Centro Radiológico del Caribe S.A.S</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-main: #1B75BB;
+    --blue-dark: #0D4F8B;
+    --blue-light: #5BB8E8;
+    --blue-pale: #EBF5FC;
+    --red: #E8303A;
+    --gray: #8A8A8A;
+    --gray-dark: #333333;
+    --white: #ffffff;
+    --bg: #F7FBFE;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Lato', sans-serif; color: var(--gray-dark); background: var(--white); overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: var(--white);
+    box-shadow: 0 2px 20px rgba(13,79,139,0.12);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  }
+  .nav-logo a { display: flex; align-items: center; text-decoration: none; }
+  .nav-logo img { height: 62px; object-fit: contain; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--blue-dark); text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: color 0.3s; position: relative; padding-bottom: 4px;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px; background: var(--red);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--blue-main); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a.active { color: var(--blue-main); }
+  .nav-links a.active::after { width: 100%; }
+  .nav-btn {
+    padding: 0.35rem 0.9rem; border-radius: 3px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; transition: background 0.3s;
+  }
+  .nav-btn-resultados {
+    background: var(--blue-light); color: var(--white);
+  }
+  .nav-btn-resultados:hover { background: #42a8d8; }
+
+  /* Acordeón Contacto en drawer */
+  .drawer-contacto-toggle {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 0; cursor: pointer;
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    background: none; border: none; width: 100%;
+    transition: color 0.2s;
+  }
+  .drawer-contacto-toggle:hover { color: var(--blue-light); }
+  .drawer-contacto-toggle .arrow { font-size: 0.7rem; transition: transform 0.3s; }
+  .drawer-contacto-toggle.open .arrow { transform: rotate(180deg); }
+  .drawer-contacto-sub { display: none; padding: 0.5rem 0 1rem 0.5rem; }
+  .drawer-contacto-sub.open { display: block; }
+  .drawer-wa-btn {
+    display: block; width: 100%;
+    background: #25D366; color: white;
+    border: none; border-radius: 4px;
+    padding: 0.7rem 1rem; text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* Resultados solo en desktop */
+  .nav-resultados-desktop { display: flex; gap: 0.6rem; }
+  @media (max-width: 640px) {
+    .nav-resultados-desktop { display: none; }
+  }
+
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; gap: 5px;
+    width: 36px; height: 36px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 100%; height: 2px;
+    background: var(--blue-dark); border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ── DRAWER ── */
+  .drawer-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 1100;
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: -280px; width: 260px; height: 100%;
+    background: var(--blue-dark); z-index: 1200;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+    transition: right 0.35s cubic-bezier(0.77,0,0.18,1);
+    display: flex; flex-direction: column; padding: 2rem 1.5rem;
+  }
+  .drawer.open { right: 0; }
+  .drawer-close {
+    align-self: flex-end; background: none; border: none;
+    font-size: 1.5rem; cursor: pointer; color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+  .drawer-links { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .drawer-links li { border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .drawer-links a {
+    display: block; padding: 1rem 0;
+    color: var(--white); text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .drawer-links a:hover { color: var(--blue-light); }
+  .drawer-btn { margin-top: 2rem; }
+
+  /* ── HERO NOSOTROS ── */
+  .page-hero {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-main) 100%);
+    padding: 9rem 8% 5rem;
+    color: white;
+  }
+  .page-hero .breadcrumb {
+    font-size: 0.78rem; color: rgba(255,255,255,0.6);
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .page-hero .breadcrumb a { color: rgba(255,255,255,0.6); text-decoration: none; }
+  .page-hero .breadcrumb a:hover { color: white; }
+  .page-hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800; line-height: 1.15;
+  }
+  .page-hero h1 span { color: var(--blue-light); }
+  .page-hero p {
+    margin-top: 1rem; font-size: 1.05rem;
+    color: rgba(255,255,255,0.8); max-width: 560px;
+    font-weight: 300; line-height: 1.7;
+  }
+
+  /* ── SECCIONES ── */
+  section { padding: 5rem 8%; }
+  .sec-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .sec-label::before { content: ''; width: 1.5rem; height: 2px; background: var(--red); }
+  .sec-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800; color: var(--blue-dark); line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .sec-title span { color: var(--blue-main); }
+
+  /* ── QUIÉNES SOMOS ── */
+  #quienes { background: var(--white); }
+  .nosotros-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: start;
+  }
+  .nosotros-left p {
+    font-size: 1rem; line-height: 1.9; color: var(--gray);
+    margin-bottom: 1.5rem; font-weight: 300;
+  }
+  .nosotros-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-top: 2rem;
+  }
+  .stat-box {
+    background: var(--blue-pale); border-radius: 6px;
+    padding: 1.2rem; border-left: 4px solid var(--blue-main);
+    text-align: center;
+  }
+  .stat-box .num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem; font-weight: 800; color: var(--blue-dark);
+  }
+  .stat-box .lbl { font-size: 0.75rem; color: var(--gray); margin-top: 0.2rem; }
+  .mv-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+  .mv-card {
+    background: var(--blue-pale); border-radius: 8px;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  .mv-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 5px; height: 100%;
+    background: var(--blue-main);
+  }
+  .mv-card.vision::before { background: var(--red); }
+  .mv-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--blue-main); margin-bottom: 0.8rem;
+  }
+  .mv-card.vision h3 { color: var(--red); }
+  .mv-card p { font-size: 0.9rem; line-height: 1.8; color: var(--gray-dark); font-weight: 300; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--white);
+    border-top: 1px solid rgba(27,117,187,0.15);
+    padding: 3rem 8% 2rem;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 1.5fr 1fr 1.5fr;
+    gap: 3rem; margin-bottom: 2rem;
+  }
+  .footer-logo a { display: inline-block; }
+  .footer-logo img { height: 52px; margin-bottom: 1rem; }
+  .footer-logo p {
+    font-size: 0.88rem; color: var(--gray);
+    line-height: 1.7; font-weight: 300; max-width: 260px;
+  }
+  .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
+  .social-btn {
+    width: 36px; height: 36px; border-radius: 6px;
+    background: var(--blue-main);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.9rem; text-decoration: none;
+    transition: background 0.3s;
+  }
+  .social-btn:hover { background: var(--blue-dark); }
+  .footer-nav h4, .footer-contact h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--blue-dark); margin-bottom: 1.2rem;
+  }
+  .footer-nav ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-nav ul a {
+    font-size: 0.88rem; color: var(--gray);
+    text-decoration: none; transition: color 0.3s;
+  }
+  .footer-nav ul a:hover { color: var(--blue-main); }
+  .footer-sede { margin-bottom: 1rem; }
+  .footer-sede strong {
+    display: block; font-size: 0.82rem;
+    color: var(--blue-main); font-weight: 700; margin-bottom: 0.3rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .footer-sede span {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.82rem; color: var(--gray); margin-bottom: 0.15rem;
+  }
+  .footer-bottom {
+    border-top: 1px solid rgba(27,117,187,0.1);
+    padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .footer-bottom p { font-size: 0.78rem; color: var(--gray); }
+  .footer-bottom a { color: var(--blue-main); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .nosotros-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 0 4%; justify-content: space-between; }
+    nav .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 3.5rem 5%; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-logo">
+    <a href="index.html">
+      <img src="logo.png" alt="Centro Radiológico del Caribe">
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="nosotros.html" class="active">Nosotros</a></li>
+    <li><a href="index.html#servicios">Servicios</a></li>
+    <li><a href="index.html#beneficios">Beneficios</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+  <div class="nav-resultados-desktop">
+    <a href="https://riscrc.hiruko.com.co/portal/login" class="nav-btn nav-btn-resultados">Resultados</a>
+  </div>
+</nav>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose">&#x2715;</button>
+  <ul class="drawer-links">
+    <li style="border-bottom:1px solid rgba(255,255,255,0.15); padding: 0.8rem 0;">
+      <a href="https://riscrc.hiruko.com.co/portal/login" style="display:block;text-align:center;background:var(--blue-light);color:white;padding:0.6rem 1rem;border-radius:4px;font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;text-decoration:none;">Resultados</a>
+    </li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+    <li><a href="index.html#servicios">Servicios</a></li>
+    <li><a href="index.html#beneficios">Beneficios</a></li>
+    <li style="border-bottom:1px solid rgba(255,255,255,0.15);">
+      <button class="drawer-contacto-toggle" id="contactoToggle">
+        Contacto <span class="arrow">▼</span>
+      </button>
+      <div class="drawer-contacto-sub" id="contactoSub">
+        <a href="https://wa.me/573015649719" target="_blank" class="drawer-wa-btn">WhatsApp</a>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a> &nbsp;/&nbsp; Nosotros
+  </div>
+  <h1>Centro Radiológico<br><span>del Caribe S.A.S</span></h1>
+  <p>Conoce quiénes somos, nuestra misión, visión y el compromiso que tenemos con la salud de Cartagena y la región Caribe.</p>
+</div>
+
+<!-- QUIÉNES SOMOS -->
+<section id="quienes">
+  <div class="nosotros-grid">
+    <div class="nosotros-left">
+      <div class="sec-label">Quiénes somos</div>
+      <h2 class="sec-title">Comprometidos con<br><span>tu salud</span></h2>
+      <p>Somos una IPS con sede principal en Cartagena de Indias, dedicada a prestar servicios de estudios radiológicos e imágenes diagnósticas en las modalidades de Ultrasonografía, Rayos X, Tomografía, Densitometría, Mamografía y Resonancia Magnética.</p>
+      <p>Contamos con una infraestructura moderna, equipos de última tecnología y un equipo humano altamente comprometido con la salud y bienestar de nuestros pacientes. La innovación y la atención oportuna son nuestra prioridad.</p>
+      <div class="nosotros-stats">
+        <div class="stat-box">
+          <div class="num">10+</div>
+          <div class="lbl">Servicios disponibles</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">100%</div>
+          <div class="lbl">Compromiso con el paciente</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">2</div>
+          <div class="lbl">Sedes en la región</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">DICOM</div>
+          <div class="lbl">Estándar internacional</div>
+        </div>
+      </div>
+    </div>
+    <div class="mv-grid">
+      <div class="mv-card">
+        <h3>🎯 Misión</h3>
+        <p>La IPS Centro Radiológico del Caribe CRC es una empresa creada con sede principal en Cartagena de Indias para contribuir a la Protección, Fomento y Recuperación de la Salud de la población de la ciudad y la Región, mediante la realización de estudios diagnósticos de alta complejidad y con máximos estándares de calidad, basados en equipos de última tecnología y talento humano altamente capacitado.</p>
+      </div>
+      <div class="mv-card vision">
+        <h3>🔭 Visión</h3>
+        <p>La IPS Centro Radiológico del Caribe se posicionará en un término de cinco años como el mejor Centro de imágenes diagnósticas de Cartagena y la Región, comprometido con una atención de excelente calidad, donde la calidez, la oportunidad, la seguridad y la humanización en el servicio sean su máxima prioridad, basados en la innovación y el desarrollo técnico y científico.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-logo">
+      <a href="index.html"><img src="logo.png" alt="CRC Logo"></a>
+      <p>El profesionalismo y la humanidad son nuestros mejores aliados.</p>
+    </div>
+    <div class="footer-nav">
+      <h4>Enlaces de interés</h4>
+      <ul>
+        <li><a href="nosotros.html">Nosotros</a></li>
+        <li><a href="servicios.html">Servicios</a></li>
+        <li><a href="index.html#beneficios">Beneficios</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <h4>Contacto</h4>
+      <div class="footer-sede">
+        <strong>Cartagena</strong>
+        <span>🏠 Transv. 36 No. 25–52 B/Bruselas</span>
+        <span>📞 PBX 6931579</span>
+      </div>
+      <div class="footer-sede">
+        <strong>Correo</strong>
+        <span>✉️ <a href="mailto:crcgestioncalidad@gmail.com">crcgestioncalidad@gmail.com</a></span>
+        <span>🌐 centroradiologicodelcaribe.com</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© Centro Radiológico del Caribe — Todos los derechos reservados</p>
+    <p>Creado por: 180°</p>
+  </div>
+</footer>
+
+<script>
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a:not(.drawer-wa-btn)').forEach(a => a.addEventListener('click', closeDrawer));
+
+  const contactoToggle = document.getElementById('contactoToggle');
+  const contactoSub = document.getElementById('contactoSub');
+  contactoToggle.addEventListener('click', () => {
+    contactoToggle.classList.toggle('open');
+    contactoSub.classList.toggle('open');
+  });
+</script>
+</body>
+</html>
